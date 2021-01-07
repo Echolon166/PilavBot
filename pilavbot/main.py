@@ -27,6 +27,7 @@ if __name__ == "__main__":
     bot = commands.Bot(command_prefix=prefix, intents=intents)
     bot.add_cog(channel_cog.ChannelCommands(bot))
     bot.add_cog(options_cog.OptionsCommands(bot))
+    bot.add_cog(setup_cog.SetupCommands(bot))
     
     for command in bot.commands:
         data.add_command(command.name, command.help)

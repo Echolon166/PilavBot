@@ -18,15 +18,13 @@ JOIN_EMOJI_KEY = "joinEmoji"
 START_EMOJI_KEY = "startEmoji"
 
 """
-    Emoji Constants
-"""
-
-DEFAULT_JOIN_EMOJI_STR = "👍"
-DEFAULT_START_EMOJI_STR = "🚀"
-
-"""
     Miscellaneous constants
 """
 
 ERROR_COLOR = Color(0xFF0000)
 SUCCESS_COLOR = Color(0x0000FF)
+
+DEFAULT_JOIN_EMOJI_STR = "👍"
+DEFAULT_START_EMOJI_STR = "🚀"
+
+ROOT_EMOJI_PATH = "assets/emojis/root"

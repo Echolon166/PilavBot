@@ -1,3 +1,5 @@
+import os
+
 from discord.ext import commands
 from discord.utils import get
 
@@ -26,5 +28,18 @@ def owner_or_permissions(**perms):
         if ctx.guild is None:
             raise errors.NoPrivateMessage
         return ctx.guild.owner_id == ctx.author.id or await original(ctx)
+
+    return commands.check(extended_check)
+
+
+def missing_required_assets(asset_path):
+    async def extended_check(ctx):
+        required_assets = os.listdir(asset_path)
+        for asset in required_assets:
+            emoji = get(ctx.message.guild.emojis, name=asset.split(".")[0])
+            if emoji is None:
+                return True
+                
+        return False
 
     return commands.check(extended_check)
