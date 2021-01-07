@@ -55,27 +55,29 @@ class ChannelCommands(commands.Cog):
     )
     @commands.guild_only()
     async def root_setup(self, ctx):
-        #setup_message = await ctx.send(f"Setting up a new root game!\nThe author should add {START_EMOJI_STR} to start.\n\nPlease add {JOIN_EMOJI_STR} as a reaction if you want to join.")
+        start_emoji = data.get_start_emoji(ctx.guild.id) or DEFAULT_START_EMOJI_STR
+        join_emoji = data.get_join_emoji(ctx.guild.id) or DEFAULT_JOIN_EMOJI_STR
+
         setup_message = await pretty_print(
             ctx,
-            f"The author should add {START_EMOJI_STR} to start.\n\nPlease add {JOIN_EMOJI_STR} as a reaction if you want to join.",
+            f"The author should add {start_emoji} to start.\n\nPlease add {join_emoji} as a reaction if you want to join.",
             title="Setting up a new root game!",
             color=SUCCESS_COLOR,
         )
-        await setup_message.add_reaction(emoji=JOIN_EMOJI_STR)
-        await setup_message.add_reaction(emoji=START_EMOJI_STR)
+        await setup_message.add_reaction(emoji=join_emoji)
+        await setup_message.add_reaction(emoji=start_emoji)
 
         while(True):
             reaction = await self.bot.wait_for('reaction_add', check=lambda reaction, author: author == ctx.author)
 
-            if(str(reaction[0].emoji) == START_EMOJI_STR and reaction[0].message.id == setup_message.id):
+            if(str(reaction[0].emoji) == start_emoji and reaction[0].message.id == setup_message.id):
                 break
 
         msg = await ctx.fetch_message(setup_message.id)
 
         users = []
         for reaction in msg.reactions:
-            if str(reaction) == JOIN_EMOJI_STR:
+            if str(reaction) == join_emoji:
                 async for user in reaction.users():
                     if user.bot != True:
                         users.append(user)

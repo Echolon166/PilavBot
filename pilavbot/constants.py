@@ -1,15 +1,32 @@
 from discord import Color
 
+"""
+    Constants useful for data module
+"""
+
 CHANNEL_PREFIXES_TABLE = "channel_prefixes"
 COMMANDS_TABLE = "commands"
+CONFIG_TABLE = "config"
 
 GUILD_ID_KEY = "guildId"
 NAME_KEY = "name"
 DESCRIPTION_KEY = "description"
 PREFIX_KEY = "prefix"
 
-JOIN_EMOJI_STR = "<:yameroextended:796332314702381066>"
-START_EMOJI_STR = "<:IMG20161025WA0048:796335620720033795>"
+CONFIG_NAME_KEY = "configName"
+JOIN_EMOJI_KEY = "joinEmoji"
+START_EMOJI_KEY = "startEmoji"
+
+"""
+    Emoji Constants
+"""
+
+DEFAULT_JOIN_EMOJI_STR = "👍"
+DEFAULT_START_EMOJI_STR = "🚀"
+
+"""
+    Miscellaneous constants
+"""
 
 ERROR_COLOR = Color(0xFF0000)
 SUCCESS_COLOR = Color(0x0000FF)

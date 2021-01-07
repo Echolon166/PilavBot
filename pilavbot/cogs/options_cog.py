@@ -1,5 +1,6 @@
 import sys
 import traceback
+from typing import Union
 
 import discord
 from discord.ext import commands
@@ -10,6 +11,7 @@ import validation
 from constants import *
 
 from utils import pretty_print
+from utils.converters import UnicodeEmoji
 
 
 class OptionsCommands(commands.Cog):  
@@ -56,3 +58,21 @@ class OptionsCommands(commands.Cog):
     @validation.owner_or_permissions(administrator=True)
     async def set_prefix(self, ctx, prefix):
         data.add_prefix_mapping(ctx.guild.id, prefix)
+
+    
+    @commands.command(
+        name="set_join_emoji", 
+        help=" <emoji> Change the join emoji for various commands",
+    )
+    @validation.owner_or_permissions(administrator=True)
+    async def set_join_emoji(self, ctx, emoji: Union[commands.EmojiConverter, UnicodeEmoji]):
+        data.set_join_emoji(ctx.guild.id, str(emoji))
+
+    
+    @commands.command(
+        name="set_start_emoji", 
+        help=" <emoji> Change the start emoji for various commands",
+    )
+    @validation.owner_or_permissions(administrator=True)
+    async def set_start_emoji(self, ctx, emoji: Union[commands.EmojiConverter, UnicodeEmoji]):
+        data.set_start_emoji(ctx.guild.id, str(emoji))

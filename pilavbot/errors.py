@@ -61,6 +61,15 @@ def standard_error_handler(error_function):
             )
             return
 
+        elif isinstance(error, EmojiNotFound):
+            await pretty_print(
+                ctx,
+                "Emoji not found." + extra,
+                title="Error",
+                color=ERROR_COLOR,
+            )
+            return
+
         elif isinstance(error, PrivateMessageOnly):
             try:
                 await ctx.message.delete()
@@ -74,7 +83,7 @@ def standard_error_handler(error_function):
                 color=ERROR_COLOR,
             )
             return
-
+        
         elif isinstance(error, MissingRole):
             await pretty_print(
                 ctx, str(error) + extra, title="Error", color=ERROR_COLOR
@@ -105,6 +114,16 @@ def standard_error_handler(error_function):
             await ctx.send_help(ctx.command)
             await pretty_print(
                 ctx, "Missing required arguments", title="Error", color=ERROR_COLOR
+            )
+            return
+
+        elif isinstance(error, BadUnionArgument):
+            await ctx.send_help(ctx.command)
+            await pretty_print(
+                ctx,
+                "Invalid argument",
+                title="Error",
+                color=ERROR_COLOR,
             )
             return
 

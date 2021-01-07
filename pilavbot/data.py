@@ -16,6 +16,11 @@ from utils.ext import connect_db
     #################### commands ####################
     name
     description
+
+    #################### config ####################
+    configName
+    joinEmoji
+    startEmoji
 """
 
 
@@ -32,6 +37,47 @@ def get_prefix(db, guild_id):
     row = table.find_one(guildId=guild_id)
     if row is not None:
         return row[PREFIX_KEY]
+    return None
+
+
+@connect_db
+def set_join_emoji(db, guild_id, join_emoji_str):
+    table = db[CONFIG_TABLE]
+    table.upsert(
+        {
+            GUILD_ID_KEY: guild_id,
+            JOIN_EMOJI_KEY: join_emoji_str,
+            CONFIG_NAME_KEY: JOIN_EMOJI_KEY,
+        },
+        [GUILD_ID_KEY, CONFIG_NAME_KEY],
+    )
+
+@connect_db
+def get_join_emoji(db, guild_id):
+    table = db[CONFIG_TABLE]
+    row = table.find_one(guildId=guild_id, configName=JOIN_EMOJI_KEY)
+    if row is not None:
+        return row[JOIN_EMOJI_KEY]
+    return None
+
+@connect_db
+def set_start_emoji(db, guild_id, message):
+    table = db[CONFIG_TABLE]
+    table.upsert(
+        {
+            GUILD_ID_KEY: guild_id,
+            START_EMOJI_KEY: message,
+            CONFIG_NAME_KEY: START_EMOJI_KEY,
+        },
+        [GUILD_ID_KEY, CONFIG_NAME_KEY],
+    )
+
+@connect_db
+def get_start_emoji(db, guild_id):
+    table = db[CONFIG_TABLE]
+    row = table.find_one(guildId=guild_id, configName=START_EMOJI_KEY)
+    if row is not None:
+        return row[START_EMOJI_KEY]
     return None
 
 
