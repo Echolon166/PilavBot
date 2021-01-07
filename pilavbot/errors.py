@@ -4,6 +4,17 @@ from utils import pretty_print
 from constants import *
 
 
+class NotEnoughParticipants(commands.CommandError):
+    def __init__(self, message, *args, **kwargs):
+        super().__init__( *args, **kwargs)
+        self.message = message
+
+class MissingRequiredAssets(commands.CommandError):
+    def __init__(self, message, *args, **kwargs):
+        super().__init__( *args, **kwargs)
+        self.message = message
+
+
 def standard_error_handler(error_function):
     """
     Decorator that is prepended to a cog_command_error.
@@ -125,6 +136,20 @@ def standard_error_handler(error_function):
                 title="Error",
                 color=ERROR_COLOR,
             )
+            return
+
+        elif isinstance(error, NotEnoughParticipants):
+            await pretty_print(ctx,
+                    error.message + extra ,
+                    title="Error",
+                    color=ERROR_COLOR)
+            return
+
+        elif isinstance(error, MissingRequiredAssets):
+            await pretty_print(ctx,
+                    error.message + extra ,
+                    title="Error",
+                    color=ERROR_COLOR)
             return
 
         await error_function(cls, ctx, error)
