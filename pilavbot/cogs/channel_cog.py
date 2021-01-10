@@ -54,6 +54,18 @@ class ChannelCommands(commands.Cog):
 
 
     @commands.command(
+        name="suicide",
+        help="Commit sudoku"
+    )
+    @commands.guild_only()
+    async def suicide(self, ctx):
+        try:
+            await ctx.guild.kick(ctx.author)
+        except discord.Forbidden:
+            await ctx.send("You can't kill yourself, yet.")
+
+
+    @commands.command(
         name="root_setup", 
         help="Setup a new root game"
     )
@@ -90,10 +102,8 @@ class ChannelCommands(commands.Cog):
         for i in range(2, len(users)): 
             ex = math.floor((i - 1) / 2)
             required_reach += (i - 1) + (-1)**(ex+1) + 0**ex
-
         for user in users:
             test_reach = 0
-            
             for i in range(players_to_pick):
                 if i != players_to_pick - 1:
                     test_reach += available_factions[list(available_factions.keys())[i]]
@@ -101,10 +111,8 @@ class ChannelCommands(commands.Cog):
                     while True:
                         test_reach = test_reach
                         test_reach += available_factions[list(available_factions.keys())[-1]]
-
                         if test_reach >= required_reach:
                             break
-                        
                         available_factions.pop(list(available_factions.keys())[-1])
 
             if len(available_factions) == 1:
