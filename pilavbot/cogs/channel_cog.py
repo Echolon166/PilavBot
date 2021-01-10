@@ -93,15 +93,18 @@ class ChannelCommands(commands.Cog):
 
         for user in users:
             test_reach = 0
+            
             for i in range(players_to_pick):
                 if i != players_to_pick - 1:
-                    test_reach += list(available_factions.values())[i]
+                    test_reach += available_factions[list(available_factions.keys())[i]]
                 else:
                     while True:
-                        temp_reach = test_reach
-                        temp_reach += list(available_factions.values())[-1]
-                        if temp_reach >= required_reach:
+                        test_reach = test_reach
+                        test_reach += available_factions[list(available_factions.keys())[-1]]
+
+                        if test_reach >= required_reach:
                             break
+                        
                         available_factions.pop(list(available_factions.keys())[-1])
 
             if len(available_factions) == 1:
@@ -114,15 +117,16 @@ class ChannelCommands(commands.Cog):
 
                 while True:
                     reaction, author = await self.bot.wait_for('reaction_add', check=check)
-                    if reaction.emoji.name in available_factions:
-                        required_reach -= available_factions[reaction.emoji.name]
-                        user_factions.append(reaction.emoji.name)
+                    emoji = str(reaction.emoji).split(":")[1]
+                    if emoji in available_factions:
+                        required_reach -= available_factions[emoji]
+                        user_factions.append(emoji)
 
-                        if reaction.emoji.name == "faction_vagabond" and available_factions["faction_vagabond"] != 2:
+                        if emoji == "faction_vagabond" and available_factions["faction_vagabond"] != 2:
+                            available_factions.pop(emoji)
                             available_factions["faction_vagabond"] = 2
-                            available_factions = sorted(available_factions.items(), key=lambda x: x[1], reverse=True)
                         else:
-                            available_factions.pop(reaction.emoji.name)
+                            available_factions.pop(emoji)
 
                         break
 
