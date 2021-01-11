@@ -3,6 +3,7 @@ import traceback
 import os
 import random
 import math
+import time
 
 import discord
 from discord.ext import commands
@@ -97,11 +98,13 @@ class ChannelCommands(commands.Cog):
 
         user_factions = []
         players_to_pick = len(users)
+        pick_messages = []
 
         required_reach = 17
         for i in range(2, len(users)): 
             ex = math.floor((i - 1) / 2)
             required_reach += (i - 1) + (-1)**(ex+1) + 0**ex
+
         for user in users:
             test_reach = 0
             for i in range(players_to_pick):
@@ -138,6 +141,8 @@ class ChannelCommands(commands.Cog):
 
                         break
 
+                pick_messages.append(pick_message)
+
             players_to_pick -= 1
 
         user_picks_str = ""
@@ -151,6 +156,10 @@ class ChannelCommands(commands.Cog):
             title="Player Factions",
             color=SUCCESS_COLOR,
         )
+
+        time.sleep(WAIT_TIME * 2)
+        for message in pick_messages:
+            await message.delete()
 
 
     def _get_faction_emojis(self, ctx):
