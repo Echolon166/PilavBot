@@ -198,7 +198,7 @@ class ChannelCommands(commands.Cog):
 
             if(str(reaction.emoji) == join_emoji and
                 reaction.message.id == setup_message.id and
-                reaction.count >= max_player):
+                reaction.count >= max_player + 1):
                     break
 
         msg = await ctx.fetch_message(setup_message.id)
