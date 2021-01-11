@@ -145,9 +145,25 @@ class ChannelCommands(commands.Cog):
     )
     @commands.guild_only()
     async def root_setup(self, ctx):
+
+
+        def get_faction_emojis(self, ctx):
+            required_assets = os.listdir(ROOT_EMOJI_PATH)
+
+            faction_emojis = {}
+            for asset in required_assets:
+                asset_name = asset.split(".")[0]
+                faction_emojis[asset_name] = get(ctx.message.guild.emojis, name=asset_name)
+                if faction_emojis[asset_name] is None:
+                    raise errors.MissingRequiredAssets("Please add all required emojis to the server first.\nAn admin can call 'add_root_required_emojis' to do so.")
+        
+            return faction_emojis
+
+
         def check(reaction, author):
                 return author == user and reaction.message.id == pick_message.id
                 
+
         faction_names_by_tag = {
             "faction_marquise": "Marquise de Cat",
             "faction_eyrie": "Eyrie Dynasties",
@@ -164,7 +180,7 @@ class ChannelCommands(commands.Cog):
             "faction_alliance": 3, 
             "faction_cult": 2,
         }
-        faction_emojis = self._get_faction_emojis(ctx)
+        faction_emojis = self.get_faction_emojis(ctx)
 
         users = await self._get_setup_participants(ctx, "root", 6)
         random.shuffle(users)
@@ -233,19 +249,6 @@ class ChannelCommands(commands.Cog):
         time.sleep(WAIT_TIME * 2)
         for message in pick_messages:
             await message.delete()
-
-
-    def _get_faction_emojis(self, ctx):
-        required_assets = os.listdir(ROOT_EMOJI_PATH)
-
-        faction_emojis = {}
-        for asset in required_assets:
-            asset_name = asset.split(".")[0]
-            faction_emojis[asset_name] = get(ctx.message.guild.emojis, name=asset_name)
-            if faction_emojis[asset_name] is None:
-                raise errors.MissingRequiredAssets("Please add all required emojis to the server first.\nAn admin can call 'add_root_required_emojis' to do so.")
-        
-        return faction_emojis
 
 
     async def _get_setup_participants(self, ctx, game_name, max_player = 99999):
