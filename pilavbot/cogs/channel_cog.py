@@ -4,6 +4,7 @@ import os
 import random
 import math
 import time
+import asyncio
 
 import discord
 from discord.ext import commands
@@ -61,9 +62,81 @@ class ChannelCommands(commands.Cog):
     @commands.guild_only()
     async def suicide(self, ctx):
         try:
+            await ctx.send(f"{ctx.author} committed sudoku.")
             await ctx.guild.kick(ctx.author)
         except discord.Forbidden:
-            await ctx.send("You can't kill yourself, yet.")
+            await ctx.send("I'm not strong enough to kill you, yet.")
+
+
+    @commands.command(
+        name="russian_roulette",
+        help="<magazine> <bullet> Start a new russian roulette game"
+    )
+    @commands.guild_only()
+    async def russian_roulette(self, ctx, magazine = 6, bullets = 1):
+
+
+        async def shoot(user):
+            if next(revolver_iter) == 1:
+                try:
+                    await ctx.guild.kick(user)
+                    await ctx.send(f"{user.mention} died.")
+                except discord.Forbidden:
+                    await ctx.send(f"{user.mention} cheated death and is still alive, but if there's one thing for sure, it's that he lost.")
+                nonlocal bullets
+                bullets -= 1
+            else:
+                await ctx.send(f"{user.mention} shot but he is still alive.")
+
+        
+        def load_revolver(self, ctx, magazine, bullets):
+            revolver = [0 for i in range(magazine)]
+
+            while(bullets):
+                slot = random.randint(0, magazine - 1)
+                if revolver[slot] != 1:
+                    evolver[slot] = 1
+                    bullets -= 1
+
+            return revolver
+
+
+        revolver = load_revolver(magazine, bullets)
+        users = await self._get_setup_participants(ctx, "russian roulette")
+
+        await ctx.send('*Gun is initialized*')
+        time.sleep(WAIT_TIME)
+        await ctx.send('*Gun is Loaded*')
+        time.sleep(WAIT_TIME)
+        await ctx.send('*Chamber is spun*')
+        time.sleep(WAIT_TIME)
+
+        self.load_revolver(ctx, magazine, bullets)
+
+        revolver_iter = iter(revolver)
+        user_iter = iter(users)
+        while(bullets > 0):
+            if iter(user_iter).__length_hint__() == 0:
+                user_iter = iter(users)
+
+            user = next(user_iter)
+            
+            def check(message):
+                return message.author == user and str(message.content) == f"shoot"
+
+            shoot_message = await ctx.send(f"{user.mention}, it's your turn to shoot. You should type shoot to shoot. (You have 10 seconds.)")
+
+            try:
+                await self.bot.wait_for('message', check=check, timeout = 10.0)
+                await shoot(user)
+            except asyncio.TimeoutError:
+                await ctx.send(f"{user.mention} had no guts to shoot himself, so he is being forced to do so.")
+                await shoot(user)
+            await shoot_message.delete()
+
+            time.sleep(WAIT_TIME)
+
+        await ctx.send(f"The magazine is empty, so the roulette is over. Congratulations to triumphant survivors.")
 
 
     @commands.command(
