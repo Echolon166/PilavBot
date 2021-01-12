@@ -23,6 +23,7 @@ START_EMOJI_KEY = "startEmoji"
 """
 
 COINGECKO_API_URL = "https://api.coingecko.com/api/v3"
+EXCHANGE_RATES_API_URL = "https://api.exchangeratesapi.io"
 
 
 """

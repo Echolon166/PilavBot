@@ -2,7 +2,7 @@ import re
 
 from discord.ext import commands
 
-import coingecko_api
+from apis import coingecko_api, exchange_rates_api
 import errors
 
 
@@ -35,7 +35,16 @@ class CryptoCoin(commands.Converter):
     async def convert(self, ctx, argument):
         valid = coingecko_api.valid_coin(argument)
         if not valid:
-            raise errors.InvalidCoin("Invalid coin symbol")
+            raise errors.InvalidSymbol("Invalid coin symbol")
 
         data = coingecko_api.get_price_data(argument)
         return {"symbol": argument, "data": data}
+
+
+class Fiat(commands.Converter):
+    async def convert(self, ctx, argument):
+        valid = exchange_rates_api.valid_fiat(argument)
+        if not valid:
+            raise errors.InvalidSymbol("Invalid fiat symbol")
+
+        return argument

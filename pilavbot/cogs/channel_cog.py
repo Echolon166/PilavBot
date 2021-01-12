@@ -5,17 +5,19 @@ import random
 import math
 import time
 import asyncio
+from typing import Optional
 
 import discord
 from discord import Color
 from discord.ext import commands
 from discord.utils import get
-from utils.converters import CryptoCoin
 
 import data
 import errors
 import validation
 from utils import pretty_print, gradient
+from utils.converters import CryptoCoin, Fiat
+from apis import exchange_rates_api
 from constants import *
 
 
@@ -56,7 +58,28 @@ class ChannelCommands(commands.Cog):
         )
 
 
-    @commands.command(name="price", help="Get the price data of a crypto coin.")
+    @commands.command(
+        name="exchange_rate", 
+        aliases=["exrate"], 
+        help="<symbol> <base> Get the exchange rate data of a fiat currency"
+    )
+    async def exchange_rate(self, ctx, symbol: Fiat, base: Optional[Fiat]):
+        base = base or "USD"
+        rate = exchange_rates_api.get_exchange_rates(symbol = symbol, base = base)
+
+        await pretty_print(
+            ctx,
+            f"1 {base} = {rate[symbol]} {symbol}",
+            title=f"Exchange Rate of {base}/{symbol}",
+            color=WHITE_COLOR,
+        )
+
+
+    @commands.command(
+        name="crypto_price",
+        aliases=["cprice"],
+        help="<coin> Get the price data of a crypto coin"
+    )
     async def price(self, ctx, coin: CryptoCoin):
 
 
@@ -83,8 +106,8 @@ class ChannelCommands(commands.Cog):
         else:
             await pretty_print(
                 ctx,
-                f"{data['current_price']}",
-                title=f"Current Price of {coin['symbol']}",
+                f"${data['current_price']}",
+                title=f"Price of {coin['symbol']}",
                 color=WHITE_COLOR,
             )
             await pretty_print(
@@ -186,7 +209,7 @@ class ChannelCommands(commands.Cog):
 
 
     @commands.command(
-        name="root_setup", 
+        name="root_setup",
         help="Setup a new root game"
     )
     @commands.guild_only()
