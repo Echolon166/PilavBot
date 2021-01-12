@@ -1,6 +1,7 @@
 from discord import Embed, Color
 
 from utils.ext import *
+from utils.color import gradient
 
 
 async def pretty_print(ctx, fields, caption="", title="", color=Color(0xFFFFFF)):

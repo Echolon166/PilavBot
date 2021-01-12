@@ -7,15 +7,16 @@ import time
 import asyncio
 
 import discord
+from discord import Color
 from discord.ext import commands
 from discord.utils import get
+from utils.converters import CryptoCoin
 
 import data
 import errors
 import validation
+from utils import pretty_print, gradient
 from constants import *
-
-from utils import pretty_print
 
 
 class ChannelCommands(commands.Cog):  
@@ -53,6 +54,51 @@ class ChannelCommands(commands.Cog):
         traceback.print_exception(
             type(error), error, error.__traceback__, file=sys.stderr
         )
+
+
+    @commands.command(name="price", help="Get the price data of a crypto coin.")
+    async def price(self, ctx, coin: CryptoCoin):
+
+
+        def get_gradient_color(percentage):
+
+            percentage = 50 + int(percentage) / 2
+            return gradient(
+                Color.red(),
+                Color.magenta(),
+                Color.lighter_grey(),
+                Color.teal(),
+                Color.green(),
+                percentage=percentage,
+            )
+
+
+        data = coin["data"]
+
+        percentage_24h = data["price_change_percentage_24h"]
+        percentage_30d = data["price_change_percentage_30d"]
+
+        if not data:
+            raise errors.RequestError("There was an error while fetching the coin data")
+        else:
+            await pretty_print(
+                ctx,
+                f"{data['current_price']}",
+                title=f"Current Price of {coin['symbol']}",
+                color=WHITE_COLOR,
+            )
+            await pretty_print(
+                ctx,
+                f"{percentage_24h}%",
+                title="24H Price Change",
+                color=get_gradient_color(percentage_24h),
+            )
+            await pretty_print(
+                ctx,
+                f"{percentage_30d}%",
+                title="30D Price Change",
+                color=get_gradient_color(percentage_30d),
+            )
 
 
     @commands.command(

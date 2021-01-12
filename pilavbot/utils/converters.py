@@ -2,6 +2,7 @@ import re
 
 from discord.ext import commands
 
+import coingecko_api
 import errors
 
 
@@ -28,3 +29,13 @@ class UnicodeEmoji(commands.Converter):
             raise errors.EmojiNotFound
 
         return argument
+
+
+class CryptoCoin(commands.Converter):
+    async def convert(self, ctx, argument):
+        valid = coingecko_api.valid_coin(argument)
+        if not valid:
+            raise errors.InvalidCoin("Invalid coin symbol")
+
+        data = coingecko_api.get_price_data(argument)
+        return {"symbol": argument, "data": data}
