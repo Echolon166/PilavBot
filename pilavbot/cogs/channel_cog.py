@@ -56,7 +56,7 @@ class ChannelCommands(commands.Cog):
         traceback.print_exception(
             type(error), error, error.__traceback__, file=sys.stderr
         )
-
+        
 
     @commands.command(
         name="exchange_rate", 
@@ -216,7 +216,7 @@ class ChannelCommands(commands.Cog):
     async def root_setup(self, ctx):
 
 
-        def get_faction_emojis(self, ctx):
+        def get_faction_emojis(self):
             required_assets = os.listdir(ROOT_EMOJI_PATH)
 
             faction_emojis = {}
@@ -249,7 +249,7 @@ class ChannelCommands(commands.Cog):
             "faction_alliance": 3, 
             "faction_cult": 2,
         }
-        faction_emojis = self.get_faction_emojis(ctx)
+        faction_emojis = get_faction_emojis(ctx)
 
         users = await self._get_setup_participants(ctx, "root", 6)
         random.shuffle(users)
