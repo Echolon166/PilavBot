@@ -1,3 +1,5 @@
+import os
+
 from discord.ext import commands
 import functools
 
@@ -54,8 +56,15 @@ def connect_db(function):
     @functools.wraps(function)
     def wrapper(*args, **kwargs):
         result = None
-        with dataset.connect(config.CONFIG.database_connection) as db:
-            result = function(db, *args, **kwargs)
-        return result
+
+        try:
+            url = config.CONFIG.database_connection
+        except:
+            url = os.getenv("DATABASE_URL")
+
+        db = dataset.connect(url)
+        result = function(db, *args, **kwargs)
+        db.commit()
+        db.close()
 
     return wrapper
