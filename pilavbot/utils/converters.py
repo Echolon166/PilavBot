@@ -2,11 +2,20 @@ import re
 
 from discord.ext import commands
 
-from apis import coingecko_api, exchange_rates_api
 import errors
+from apis import coingecko_api, exchange_rates_api
 
 
 class UnicodeEmoji(commands.Converter):
+    """Converter to check if the emoji is an unicode emoji.
+
+        Raises:
+            errors.EmojiNotFound: Given emoji is not an unicode emoji.
+
+        Returns:
+            str: String representation of the emoji.
+    """
+
     async def convert(self, ctx, argument):
         pattern = re.compile(
             "(["
@@ -32,17 +41,44 @@ class UnicodeEmoji(commands.Converter):
 
 
 class CryptoCoin(commands.Converter):
+    """Converter to check if the given coin is valid, and if valid, return it's price data.
+
+        Raises:
+            errors.InvalidSymbol: No coin exists with given symbol.
+            errors.RequestError: There was an error while fetching the data.
+
+        Returns:
+            dict: A dict which consists of following keys:
+                symbol and data(price data).
+    """
+
     async def convert(self, ctx, argument):
+        # Check if the coin is valid
         valid = coingecko_api.valid_coin(argument)
         if not valid:
             raise errors.InvalidSymbol("Invalid coin symbol")
 
+        # Retrieve the price data of the coin
         data = coingecko_api.get_price_data(argument)
+        if data is None:
+            raise errors.RequestError(
+                "There was an error while fetching the coin data")
+
         return {"symbol": argument, "data": data}
 
 
 class Fiat(commands.Converter):
+    """Converter to check if the given fiat is valid
+
+        Raises:
+            errors.InvalidSymbol: No fiat exists with given symbol.
+
+        Returns:
+            str: Symbol of the fiat.
+    """
+
     async def convert(self, ctx, argument):
+        # Check if the fiat is valid
         valid = exchange_rates_api.valid_fiat(argument)
         if not valid:
             raise errors.InvalidSymbol("Invalid fiat symbol")

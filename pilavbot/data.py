@@ -52,6 +52,7 @@ def set_join_emoji(db, guild_id, join_emoji_str):
         [GUILD_ID_KEY, CONFIG_NAME_KEY],
     )
 
+
 @connect_db
 def get_join_emoji(db, guild_id):
     table = db[CONFIG_TABLE]
@@ -59,6 +60,7 @@ def get_join_emoji(db, guild_id):
     if row is not None:
         return row[JOIN_EMOJI_KEY]
     return None
+
 
 @connect_db
 def set_start_emoji(db, guild_id, message):
@@ -71,6 +73,7 @@ def set_start_emoji(db, guild_id, message):
         },
         [GUILD_ID_KEY, CONFIG_NAME_KEY],
     )
+
 
 @connect_db
 def get_start_emoji(db, guild_id):

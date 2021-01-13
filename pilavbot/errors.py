@@ -1,18 +1,19 @@
 from discord.ext import commands
 from discord.ext.commands.errors import *
+
 from utils import pretty_print
 from constants import *
 
 
 class NotEnoughParticipants(commands.CommandError):
     def __init__(self, message, *args, **kwargs):
-        super().__init__( *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.message = message
 
 
 class MissingRequiredAssets(commands.CommandError):
     def __init__(self, message, *args, **kwargs):
-        super().__init__( *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.message = message
 
 
@@ -29,10 +30,9 @@ class RequestError(commands.CommandError):
 
 
 def standard_error_handler(error_function):
-    """
-    Decorator that is prepended to a cog_command_error.
-    It transforms the error handler into one that makes helpful and specific checks
-    and returns a function that readily prints the error
+    """Decorator that is prepended to a cog_command_error.
+        It transforms the error handler into one that makes helpful and specific checks and 
+            returns a function that readily prints the error.
     """
 
     async def wrapper(cls, ctx, error):
@@ -55,7 +55,10 @@ def standard_error_handler(error_function):
 
         if isinstance(error, DisabledCommand):
             await pretty_print(
-                ctx, "This command is disabled!", title="Error", color=ERROR_COLOR
+                ctx,
+                "This command is disabled!",
+                title="Error",
+                color=ERROR_COLOR,
             )
 
         elif isinstance(error, MemberNotFound):
@@ -107,10 +110,13 @@ def standard_error_handler(error_function):
                 color=ERROR_COLOR,
             )
             return
-        
+
         elif isinstance(error, MissingRole):
             await pretty_print(
-                ctx, str(error) + extra, title="Error", color=ERROR_COLOR
+                ctx,
+                str(error) + extra,
+                title="Error",
+                color=ERROR_COLOR,
             )
             return
 
@@ -137,7 +143,10 @@ def standard_error_handler(error_function):
         elif isinstance(error, MissingRequiredArgument):
             await ctx.send_help(ctx.command)
             await pretty_print(
-                ctx, "Missing required arguments", title="Error", color=ERROR_COLOR
+                ctx,
+                "Missing required arguments",
+                title="Error",
+                color=ERROR_COLOR,
             )
             return
 
@@ -152,28 +161,38 @@ def standard_error_handler(error_function):
             return
 
         elif isinstance(error, NotEnoughParticipants):
-            await pretty_print(ctx,
-                    error.message + extra ,
-                    title="Error",
-                    color=ERROR_COLOR)
+            await pretty_print(
+                ctx,
+                error.message + extra,
+                title="Error",
+                color=ERROR_COLOR,
+            )
             return
 
         elif isinstance(error, MissingRequiredAssets):
-            await pretty_print(ctx,
-                    error.message + extra ,
-                    title="Error",
-                    color=ERROR_COLOR)
+            await pretty_print(
+                ctx,
+                error.message + extra,
+                title="Error",
+                color=ERROR_COLOR,
+            )
             return
 
         elif isinstance(error, InvalidSymbol):
             await pretty_print(
-                ctx, error.message + extra, title="Error", color=ERROR_COLOR
+                ctx,
+                error.message + extra,
+                title="Error",
+                color=ERROR_COLOR,
             )
             return
 
         elif isinstance(error, RequestError):
             await pretty_print(
-                ctx, error.message + extra, title="Error", color=ERROR_COLOR
+                ctx,
+                error.message + extra,
+                title="Error",
+                color=ERROR_COLOR,
             )
             return
 

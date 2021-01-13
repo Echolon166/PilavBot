@@ -7,7 +7,7 @@ import config
 import data
 from constants import *
 
-from cogs import *
+from cogs import channel_cog, options_cog, setup_cog
 
 
 if __name__ == "__main__":
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     bot.add_cog(channel_cog.ChannelCommands(bot))
     bot.add_cog(options_cog.OptionsCommands(bot))
     bot.add_cog(setup_cog.SetupCommands(bot))
-    
+
     for command in bot.commands:
         data.add_command(command.name, command.help)
 

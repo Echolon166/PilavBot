@@ -6,6 +6,13 @@ from constants import *
 
 
 def returnReqError(url, result):
+    """Handler for the request errors.
+
+    Args:
+        url (str): URL which the request was made.
+        result (requests.models.Response): Response of the request.
+    """
+    
     print("Request error!")
     print(f"Url: {url}")
     print(f"Status Code: {result.status_code}")
@@ -14,20 +21,35 @@ def returnReqError(url, result):
 
 
 def get_coins_list():
+    """Get the list of all coins.
+
+    Returns:
+        List: A list which consists of json-encoded coins list.
+    """
+
     url = COINGECKO_API_URL + "/coins/list"
     result = requests.get(url)
     if result.status_code != 200:
         returnReqError(url, result)
-        return False
+        return None
 
     return result.json()
 
 
 def valid_coin(symbol):
+    """Checks if the coin is valid or not.
+
+    Args:
+        symbol (str): Symbol representation of the coin (eg. BTC for Bitcoin).
+
+    Returns:
+        bool: If the coin exists or not.
+    """
+
     symbol = symbol.lower()
 
     coins = get_coins_list()
-    if coins is False:
+    if coins is None:
         return False
 
     for keyval in coins:
@@ -37,28 +59,46 @@ def valid_coin(symbol):
 
 
 def get_id_from_symbol(symbol):
+    """Get id of coin using its symbol representation.
+
+    Args:
+        symbol (str): Symbol representation of the coin (eg. BTC for Bitcoin).
+
+    Returns:
+        str: Id of the coin.
+    """
     symbol = symbol.lower()
 
     coins = get_coins_list()
     if coins is False:
-        return False
+        return None
 
     for keyval in coins:
         if symbol == keyval["symbol"].lower():
             return keyval["id"]
-    return False
+    return None
 
 
 def get_price_data(symbol):
+    """Get price data of the given coin.
+
+    Args:
+        symbol (str): Symbol representation of the coin (eg. BTC for Bitcoin).
+
+    Returns:
+        dict: A dict which consists of following keys:
+            current_price, price_change_percentage_24h and price_change_percentage_30d.
+    """
+
     id = get_id_from_symbol(symbol)
-    if id is False:
-        return False
+    if id is None:
+        return None
 
     url = COINGECKO_API_URL + "/coins/" + id
     result = requests.get(url)
     if result.status_code != 200:
         returnReqError(url, result)
-        return False
+        return None
 
     result = result.json()["market_data"]
     return {

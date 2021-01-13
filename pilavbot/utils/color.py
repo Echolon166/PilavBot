@@ -6,8 +6,15 @@ from constants import *
 
 
 def mix_colors(start_color, final_color, ratio=0.5):
-    """
-    Given two colors, mix their values by proportions weighted by percentage.
+    """Given two colors, mix their values by proportions weighted by percentage.
+
+    Args:
+        start_color (discord.Color): Starter color of the color mix.
+        final_color (discord.Color): Expected final color of the color mix.
+        ratio (float): Ratio of the color mix.
+
+    Returns:
+        discord.Color: Color mix which obtained from given colors.
     """
 
     start_color_tuple = start_color.to_rgb()
@@ -23,10 +30,15 @@ def mix_colors(start_color, final_color, ratio=0.5):
 
 
 def gradient(*colors, percentage=100):
-    """
-    Given many discord.Colors and a percentage, mix them together as if on a linear gradient.
-    The higher the percent, the more of the final color listed appears
-    and vice versa for lower percentages.
+    """Given many discord.Colors and a percentage, mix them together as if on a linear gradient.
+
+    Args:
+        colors (discord.Color): Colors to be mixed together to create the gradient.
+        percentage (int): The higher the percentage, the more of the final color listed appears 
+            and vice versa for lower percentages.
+
+    Returns:
+        discord.Color: Color gradient which obtained from given colors.
     """
 
     # Range between 0 - 100
