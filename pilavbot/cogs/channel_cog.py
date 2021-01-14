@@ -74,7 +74,7 @@ class ChannelCommands(commands.Cog):
 
         await pretty_print(
             ctx,
-            f"1 {base} = {rate[symbol]} {symbol}",
+            f"1 {base} = {'%.2f' % round(rate[symbol], 2)} {symbol}",
             title=f"Exchange Rate of {base}/{symbol}",
             color=WHITE_COLOR,
         )

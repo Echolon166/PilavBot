@@ -64,7 +64,7 @@ class CryptoCoin(commands.Converter):
             raise errors.RequestError(
                 "There was an error while fetching the coin data")
 
-        return {"symbol": argument, "data": data}
+        return {"symbol": argument.upper(), "data": data}
 
 
 class Fiat(commands.Converter):
