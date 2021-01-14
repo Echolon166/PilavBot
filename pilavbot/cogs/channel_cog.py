@@ -141,7 +141,7 @@ class ChannelCommands(commands.Cog):
         help="[magazine] [bullet] Start a new russian roulette game"
     )
     @commands.guild_only()
-    async def russian_roulette(self, ctx, magazine=6, bullets=1):
+    async def russian_roulette(self, ctx, magazine: int = 6, bullets: int = 1):
 
         # Shoot the user, if there is a bullet(1) in revolver_iter, kick the user
         async def shoot(user):
@@ -292,11 +292,12 @@ class ChannelCommands(commands.Cog):
                     # If test reach doesn't reach required reach, remove the faction with lowest reach and
                     #   calculate again with new lowest one
                     while True:
-                        test_reach = test_reach
-                        test_reach += available_factions[list(
+                        last_reach = available_factions[list(
                             available_factions.keys())[-1]]
+                        test_reach += last_reach
                         if test_reach >= required_reach:
                             break
+                        test_reach -= last_reach
                         available_factions.pop(
                             list(available_factions.keys())[-1])
 
