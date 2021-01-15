@@ -73,6 +73,16 @@ class ChannelCommands(commands.Cog):
             await ctx.send("I'm not strong enough to kill you, yet.")
 
     @commands.command(
+        name="fu",
+        aliases=["evanescence"],
+        help="I'm falling forever",
+    )
+    @commands.guild_only()
+    async def fu(self, ctx):
+        await ctx.message.delete()
+        await ctx.send("https://media1.tenor.com/images/24236ca4d39f24bc53d0dfc08c800c96/tenor.gif?itemid=14316459")
+
+    @commands.command(
         name="russian_roulette",
         help="Start a new russian roulette game"
     )
