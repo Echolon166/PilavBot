@@ -86,28 +86,28 @@ class Fiat(commands.Converter):
         return argument
 
 
-class City(commands.Converter):
-    """Converter to check if the given string is a valid city
+class Location(commands.Converter):
+    """Converter to check if the given string is a valid location.
 
         Raises:
-            errors.InvalidArgument: No city exists with given name.
+            errors.InvalidArgument: No location exists with given name.
             errors.RequestError: There was an error while fetching the data.
 
         Returns:
             dict: A dict which consists of following keys:
-                city_name and data(weather data).
+                location_name and data(weather data).
     """
 
     async def convert(self, ctx, argument):
-        # Check if argument is a valid city
-        valid = weather_api.valid_city(argument)
+        # Check if argument is a valid location
+        valid = weather_api.valid_location(argument)
         if not valid:
-            raise errors.InvalidArgument("Invalid city name")
+            raise errors.InvalidArgument("Invalid location name")
 
-        # Retrieve the current weather data of the city
+        # Retrieve the current weather data of the location
         data = weather_api.get_current_weather_data(argument)
         if data is None:
             raise errors.RequestError(
                 "There was an error while fetching the weather data")
 
-        return {"city_name": argument.capitalize(), "data": data}
+        return {"location_name": argument.capitalize(), "data": data}

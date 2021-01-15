@@ -16,7 +16,7 @@ import data
 import errors
 import validation
 from utils import pretty_print, gradient
-from utils.converters import CryptoCoin, Fiat, City
+from utils.converters import CryptoCoin, Fiat, Location
 from apis import exchange_rates_api
 from constants import *
 
@@ -65,11 +65,11 @@ class ChannelCommands(commands.Cog):
 
     @commands.command(
         name="weather",
-        help="<city> Get current weather data of a city / location"
+        help="Get current weather of a location"
     )
-    async def weather(self, ctx, *, city: City):
-        city_name = city["city_name"]
-        data = city["data"]
+    async def weather(self, ctx, *, location: Location):
+        location_name = location["location_name"]
+        data = location["data"]
 
         await pretty_print(
             ctx,
@@ -106,7 +106,7 @@ class ChannelCommands(commands.Cog):
                 },
             ],
             thumbnail=data["icon_url"],
-            title=f"Weather in {city_name}, {data['city_country']}",
+            title=f"Weather in {location_name}, {data['location_country']}",
             footer={
                 "text": f"Requested by {ctx.author.name}",
                 "icon_url": ctx.author.avatar_url,
@@ -118,7 +118,7 @@ class ChannelCommands(commands.Cog):
     @commands.command(
         name="exchange_rate",
         aliases=["exrate"],
-        help="<symbol> [base] Get the exchange rate data of a fiat currency"
+        help="Get the exchange rate of a fiat currency"
     )
     async def exchange_rate(self, ctx, symbol: Fiat, base: Optional[Fiat]):
         base = base or "USD"
@@ -134,7 +134,7 @@ class ChannelCommands(commands.Cog):
     @commands.command(
         name="crypto_price",
         aliases=["cprice"],
-        help="<coin> Get the price data of a crypto coin"
+        help="Get the price of a crypto coin"
     )
     async def price(self, ctx, coin: CryptoCoin):
 
@@ -190,7 +190,7 @@ class ChannelCommands(commands.Cog):
 
     @commands.command(
         name="russian_roulette",
-        help="[magazine] [bullet] Start a new russian roulette game"
+        help="Start a new russian roulette game"
     )
     @commands.guild_only()
     async def russian_roulette(self, ctx, magazine: int = 6, bullets: int = 1):

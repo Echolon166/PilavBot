@@ -21,15 +21,15 @@ def returnReqError(url, result):
     print(result.json())
 
 
-def get_current_weather_data(city):
-    """Get weather data using given city / location name.
+def get_current_weather_data(location):
+    """Get weather data using given location name.
 
     Args:
-        city (str): Name of the city / location.
+        location (str): Name of the location.
 
     Returns:
         dict: A dict which consists of following keys:
-            weather_description, icon_url, city_country, temp, temp_feels_like, temp_max, temp_min, humidity, wind_speed.
+            weather_description, icon_url, location_country, temp, temp_feels_like, temp_max, temp_min, humidity, wind_speed.
     """
 
     def kelvin_to_celcius(temperature):
@@ -42,7 +42,7 @@ def get_current_weather_data(city):
     if api_key is None:
         return None
 
-    url = WEATHER_API_URL + "?appid=" + api_key + "&q=" + city
+    url = WEATHER_API_URL + "?appid=" + api_key + "&q=" + location
     result = requests.get(url)
     if result.status_code != 200:
         returnReqError(url, result)
@@ -57,7 +57,7 @@ def get_current_weather_data(city):
     return {
         "weather_description": result_weather[0]["description"].capitalize(),
         "icon_url": WEATHER_ICON_URL + result_weather[0]["icon"] + ".png",
-        "city_country": result_sys["country"],
+        "location_country": result_sys["country"],
         "temp": kelvin_to_celcius(result_main["temp"]),
         "temp_feels_like": kelvin_to_celcius(result_main["feels_like"]),
         "temp_max": kelvin_to_celcius(result_main["temp_max"]),
@@ -67,17 +67,17 @@ def get_current_weather_data(city):
     }
 
 
-def valid_city(city):
-    """Check if the city is valid or not.
+def valid_location(location):
+    """Check if the location is valid or not.
 
     Args:
-        city (str): Name of the city / location.
+        location (str): Name of the location.
 
     Returns:
-        bool: If the city exists or not.
+        bool: If the location exists or not.
     """
 
-    weather_data = get_current_weather_data(city)
+    weather_data = get_current_weather_data(location)
     if weather_data is None:
         return False
     return True

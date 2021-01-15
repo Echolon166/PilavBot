@@ -55,7 +55,7 @@ class OptionsCommands(commands.Cog):
 
     @commands.command(
         name="set_prefix",
-        help=" <prefix> Prefix for bot commands",
+        help="Prefix for bot commands",
     )
     @validation.owner_or_permissions(administrator=True)
     async def set_prefix(self, ctx, prefix):
@@ -63,7 +63,7 @@ class OptionsCommands(commands.Cog):
 
     @commands.command(
         name="set_join_emoji",
-        help=" <emoji> Change the join emoji for various commands",
+        help="Change the join emoji for various commands",
     )
     @validation.owner_or_permissions(administrator=True)
     async def set_join_emoji(self, ctx, emoji: Union[commands.EmojiConverter, UnicodeEmoji]):
@@ -71,7 +71,7 @@ class OptionsCommands(commands.Cog):
 
     @commands.command(
         name="set_start_emoji",
-        help=" <emoji> Change the start emoji for various commands",
+        help="Change the start emoji for various commands",
     )
     @validation.owner_or_permissions(administrator=True)
     async def set_start_emoji(self, ctx, emoji: Union[commands.EmojiConverter, UnicodeEmoji]):
