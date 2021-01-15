@@ -56,8 +56,8 @@ class SetupCommands(commands.Cog):
         name="add_root_required_emojis",
         help="Adds required emojis for root setup command to the server",
     )
-    @validation.owner_or_permissions(administrator=True)
     @validation.missing_required_assets(ROOT_EMOJI_PATH)
+    @validation.owner_or_permissions(administrator=True)
     async def add_root_required_emojis(self, ctx):
         asset_path = ROOT_EMOJI_PATH
 
