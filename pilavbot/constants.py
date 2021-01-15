@@ -24,6 +24,9 @@ START_EMOJI_KEY = "startEmoji"
 
 COINGECKO_API_URL = "https://api.coingecko.com/api/v3"
 EXCHANGE_RATES_API_URL = "https://api.exchangeratesapi.io"
+WEATHER_API_URL = "http://api.openweathermap.org/data/2.5/weather"
+
+WEATHER_ICON_URL = "http://openweathermap.org/img/w/"
 
 
 """

@@ -17,7 +17,7 @@ class MissingRequiredAssets(commands.CommandError):
         self.message = message
 
 
-class InvalidSymbol(commands.CommandError):
+class InvalidArgument(commands.CommandError):
     def __init__(self, message, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.message = message
@@ -178,7 +178,7 @@ def standard_error_handler(error_function):
             )
             return
 
-        elif isinstance(error, InvalidSymbol):
+        elif isinstance(error, InvalidArgument):
             await pretty_print(
                 ctx,
                 error.message + extra,

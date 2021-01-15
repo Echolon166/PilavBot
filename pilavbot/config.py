@@ -8,6 +8,8 @@ arg_parser.add("-c", "--config", is_config_file=True, help="Config file")
 
 arg_parser.add("-t", "--secret_token", help="Discord bot login token")
 
+arg_parser.add("-w", "--weather_api_key", help="OpenWeather API key")
+
 arg_parser.add(
     "-p", "--command_prefix", default="$", help="The symbol used before commands"
 )

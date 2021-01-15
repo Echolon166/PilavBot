@@ -16,7 +16,7 @@ import data
 import errors
 import validation
 from utils import pretty_print, gradient
-from utils.converters import CryptoCoin, Fiat
+from utils.converters import CryptoCoin, Fiat, City
 from apis import exchange_rates_api
 from constants import *
 
@@ -61,6 +61,58 @@ class ChannelCommands(commands.Cog):
             error,
             error.__traceback__,
             file=sys.stderr,
+        )
+
+    @commands.command(
+        name="weather",
+        help="<city> Get current weather data of a city / location"
+    )
+    async def weather(self, ctx, *, city: City):
+        city_name = city["city_name"]
+        data = city["data"]
+
+        await pretty_print(
+            ctx,
+            [
+                {
+                    "name": "Descripition",
+                    "value": f"{data['weather_description']}",
+                    "inline": False,
+                },
+                {
+                    "name": "Temperature(°C)",
+                    "value": f"{data['temp']}°",
+                    "inline": False,
+                },
+                {
+                    "name": f"***Feels Like***",
+                    "value": f"{data['temp_feels_like']}°",
+                },
+                {
+                    "name": f"***Max.***",
+                    "value": f"{data['temp_max']}°",
+                },
+                {
+                    "name": f"***Min.***",
+                    "value": f"{data['temp_min']}°",
+                },
+                {
+                    "name": "Humidity(%)",
+                    "value": f"{data['humidity']}%",
+                },
+                {
+                    "name": "Wind",
+                    "value": f"{data['wind_speed']} km/h",
+                },
+            ],
+            thumbnail=data["icon_url"],
+            title=f"Weather in {city_name}, {data['city_country']}",
+            footer={
+                "text": f"Requested by {ctx.author.name}",
+                "icon_url": ctx.author.avatar_url,
+            },
+            timestamp=True,
+            color=WHITE_COLOR,
         )
 
     @commands.command(
