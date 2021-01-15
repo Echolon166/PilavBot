@@ -5,19 +5,14 @@ import random
 import math
 import time
 import asyncio
-from typing import Optional
 
 import discord
-from discord import Color
 from discord.ext import commands
 from discord.utils import get
 
 import data
 import errors
-import validation
-from utils import pretty_print, gradient
-from utils.converters import CryptoCoin, Fiat, Location
-from apis import exchange_rates_api
+from utils import pretty_print
 from constants import *
 
 
@@ -61,117 +56,6 @@ class ChannelCommands(commands.Cog):
             error,
             error.__traceback__,
             file=sys.stderr,
-        )
-
-    @commands.command(
-        name="weather",
-        help="Get current weather of a location"
-    )
-    async def weather(self, ctx, *, location: Location):
-        location_name = location["location_name"]
-        data = location["data"]
-
-        await pretty_print(
-            ctx,
-            [
-                {
-                    "name": "Descripition",
-                    "value": f"{data['weather_description']}",
-                    "inline": False,
-                },
-                {
-                    "name": "Temperature(°C)",
-                    "value": f"{data['temp']}°",
-                    "inline": False,
-                },
-                {
-                    "name": f"***Feels Like***",
-                    "value": f"{data['temp_feels_like']}°",
-                },
-                {
-                    "name": f"***Max.***",
-                    "value": f"{data['temp_max']}°",
-                },
-                {
-                    "name": f"***Min.***",
-                    "value": f"{data['temp_min']}°",
-                },
-                {
-                    "name": "Humidity(%)",
-                    "value": f"{data['humidity']}%",
-                },
-                {
-                    "name": "Wind",
-                    "value": f"{data['wind_speed']} km/h",
-                },
-            ],
-            thumbnail=data["icon_url"],
-            title=f"Weather in {location_name}, {data['location_country']}",
-            footer={
-                "text": f"Requested by {ctx.author.name}",
-                "icon_url": ctx.author.avatar_url,
-            },
-            timestamp=True,
-            color=WHITE_COLOR,
-        )
-
-    @commands.command(
-        name="exchange_rate",
-        aliases=["exrate"],
-        help="Get the exchange rate of a fiat currency"
-    )
-    async def exchange_rate(self, ctx, symbol: Fiat, base: Optional[Fiat]):
-        base = base or "USD"
-        rate = exchange_rates_api.get_exchange_rates(symbol=symbol, base=base)
-
-        await pretty_print(
-            ctx,
-            f"1 {base} = {'%.2f' % round(rate[symbol], 2)} {symbol}",
-            title=f"Exchange Rate of {base}/{symbol}",
-            color=WHITE_COLOR,
-        )
-
-    @commands.command(
-        name="crypto_price",
-        aliases=["cprice"],
-        help="Get the price of a crypto coin"
-    )
-    async def price(self, ctx, coin: CryptoCoin):
-
-        # Gets gradient color which will represent the change in price.
-        def get_gradient_color(percentage):
-            percentage = 50 + int(percentage) / 2
-            return gradient(
-                Color.red(),
-                Color.magenta(),
-                Color.lighter_grey(),
-                Color.teal(),
-                Color.green(),
-                percentage=percentage,
-            )
-
-        data = coin["data"]
-
-        percentage_24h = data["price_change_percentage_24h"]
-        percentage_30d = data["price_change_percentage_30d"]
-
-        await pretty_print(
-            ctx,
-            f"${data['current_price']}",
-            title=f"Price of {coin['symbol']}",
-            color=WHITE_COLOR,
-        )
-        await pretty_print(
-            ctx,
-            f"{percentage_24h}%",
-            title="24H Price Change",
-            color=get_gradient_color(percentage_24h),
-        )
-        await pretty_print(
-            ctx,
-            f"{percentage_30d}%",
-            title="30D Price Change",
-            color=get_gradient_color(percentage_30d),
         )
 
     @commands.command(
