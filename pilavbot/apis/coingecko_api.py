@@ -12,7 +12,7 @@ def returnReqError(url, result):
         url (str): URL which the request was made.
         result (requests.models.Response): Response of the request.
     """
-    
+
     print("Request error!")
     print(f"Url: {url}")
     print(f"Status Code: {result.status_code}")
@@ -87,7 +87,7 @@ def get_price_data(symbol):
 
     Returns:
         dict: A dict which consists of following keys:
-            current_price, price_change_percentage_24h and price_change_percentage_30d.
+            current_price, high_24h, low_24h, price_change_percentage_24h, price_change_percentage_7d and price_change_percentage_30d, market_cap_rank.
     """
 
     id = get_id_from_symbol(symbol)
@@ -103,6 +103,10 @@ def get_price_data(symbol):
     result = result.json()["market_data"]
     return {
         "current_price": result["current_price"]["usd"],
+        "high_24h": result["high_24h"]["usd"],
+        "low_24h": result["low_24h"]["usd"],
         "price_change_percentage_24h": result["price_change_percentage_24h"],
+        "price_change_percentage_7d": result["price_change_percentage_7d"],
         "price_change_percentage_30d": result["price_change_percentage_30d"],
+        "market_cap_rank": result["market_cap_rank"],
     }

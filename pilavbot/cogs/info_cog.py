@@ -5,10 +5,9 @@ from typing import Optional
 import discord
 from discord.ext import commands
 from discord.utils import get
-from discord import Color
 
 import errors
-from utils import pretty_print, gradient
+from utils import pretty_print
 from utils.converters import CryptoCoin, Fiat, Location
 from apis import exchange_rates_api
 from constants import *
@@ -100,10 +99,7 @@ class InfoCommands(commands.Cog):
             ],
             thumbnail=data["icon_url"],
             title=f"Weather in {location_name}, {data['location_country']}",
-            footer={
-                "text": f"Requested by {ctx.author.name}",
-                "icon_url": ctx.author.avatar_url,
-            },
+            footer=self._requested_by_footer(ctx),
             timestamp=True,
             color=WHITE_COLOR,
         )
@@ -119,8 +115,15 @@ class InfoCommands(commands.Cog):
 
         await pretty_print(
             ctx,
-            f"1 {base} = {'%.2f' % round(rate[symbol], 2)} {symbol}",
-            title=f"Exchange Rate of {base}/{symbol}",
+            [
+                {
+                    "name": f"{base}/{symbol}",
+                    "value": f"1 {base} = {'%.2f' % round(rate[symbol], 2)} {symbol}",
+                },
+            ],
+            title="Exchange Rate",
+            footer=self._requested_by_footer(ctx),
+            timestamp=True,
             color=WHITE_COLOR,
         )
 
@@ -130,39 +133,66 @@ class InfoCommands(commands.Cog):
         help="Get the price of a crypto coin"
     )
     async def crypto_price(self, ctx, coin: CryptoCoin):
-
-        # Gets gradient color which will represent the change in price.
-        def get_gradient_color(percentage):
-            percentage = 50 + int(percentage) / 2
-            return gradient(
-                Color.red(),
-                Color.magenta(),
-                Color.lighter_grey(),
-                Color.teal(),
-                Color.green(),
-                percentage=percentage,
-            )
-
         data = coin["data"]
 
-        percentage_24h = data["price_change_percentage_24h"]
-        percentage_30d = data["price_change_percentage_30d"]
+        price_change_perc_24h = data["price_change_percentage_24h"]
+        price_change_perc_7d = data["price_change_percentage_7d"]
+        price_change_perc_30d = data["price_change_percentage_30d"]
+
+        # Add + in front of the positive percentages to show green color (- comes from api itself for negatives)
+        if price_change_perc_24h >= 0:
+            price_change_perc_24h = "+" + str(price_change_perc_24h)
+        if price_change_perc_7d >= 0:
+            price_change_perc_7d = "+" + str(price_change_perc_7d)
+        if price_change_perc_30d >= 0:
+            price_change_perc_30d = "+" + str(price_change_perc_30d)
 
         await pretty_print(
             ctx,
-            f"${data['current_price']}",
-            title=f"Price of {coin['symbol']}",
+            [
+                {
+                    "name": "Current Price",
+                    "value": f"```diff\n${data['current_price']}```",
+                    "inline": False,
+                },
+                {
+                    "name": "24h Price Change",
+                    "value": f"```diff\n{price_change_perc_24h}%\n```",
+                },
+                {
+                    "name": "7d Price Change",
+                    "value": f"```diff\n{price_change_perc_7d}%```",
+                },
+                {
+                    "name": "30d Price Change",
+                    "value": f"```diff\n{price_change_perc_30d}%```",
+                },
+                {
+                    "name": "24h Low",
+                    "value": f"```diff\n{data['low_24h']}```",
+                },
+                {
+                    "name": "24h High",
+                    "value": f"```diff\n{data['high_24h']}```",
+                },
+                {
+                    "name": "Market Cap Rank",
+                    "value": f"```diff\n{data['market_cap_rank']}```",
+                },
+            ],
+            title=f"{coin['symbol']} Price Statistics",
+            footer=self._requested_by_footer(ctx),
+            timestamp=True,
             color=WHITE_COLOR,
         )
-        await pretty_print(
-            ctx,
-            f"{percentage_24h}%",
-            title="24H Price Change",
-            color=get_gradient_color(percentage_24h),
-        )
-        await pretty_print(
-            ctx,
-            f"{percentage_30d}%",
-            title="30D Price Change",
-            color=get_gradient_color(percentage_30d),
-        )
+
+    def _requested_by_footer(self, ctx):
+        # Return empty dict if in private message
+        if ctx.guild is None:
+            return {}
+
+        # Return requested by author message and author avatar url if in guild
+        return {
+            "text": f"Requested by {ctx.author.name}",
+            "icon_url": ctx.author.avatar_url,
+        }
